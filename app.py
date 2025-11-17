@@ -19,7 +19,7 @@ st.title("📈 پیش‌بینی بازار با Gemini (کاملاً رایگا
 # -------------------------
 st.sidebar.header("تنظیمات")
 
-GEMINI_KEY = st.sidebar.text_input("Gemini API Key (رایگان از Google AI Studio)", type="password")
+GEMINI_KEY = "AIzaSyAA90H731pSoYBT7q3yrHEUmM5bwP7wtQs"
 
 if GEMINI_KEY:
     genai.configure(api_key=GEMINI_KEY)
