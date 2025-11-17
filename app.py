@@ -81,7 +81,7 @@ if st.button("🚀 دریافت دیتا + تحلیل Gemini"):
         t0 = time.time()
 
         # news
-        news = get_news()
+        news = {"".join([f"- {n.title}\n" for n in news])} #get_news()
 
         # prices
         stock_price, stock_hist = get_stock(stock_symbol)
@@ -100,8 +100,7 @@ if st.button("🚀 دریافت دیتا + تحلیل Gemini"):
         if GEMINI_KEY:
             prompt = f"""
 اخبار اقتصادی امروز:
-
-{"".join([f"- {n.title}\n" for n in news])}
+{news}
 
 قیمت‌ها:
 - سهام {stock_symbol}: {stock_price}
@@ -113,8 +112,7 @@ if st.button("🚀 دریافت دیتا + تحلیل Gemini"):
 - کریپتو: {crypto_pred}
 - فلز: {metal_pred}
 
-لطفاً تحلیل تو، روندها، و پیش‌بینی کوتاه‌مدت خودت را بده.
-"""
+لطفاً تحلیل تو، روندها، و پیش‌بینی کوتاه‌مدت خودت را بده."""
 
             ai_output = model.generate_content(prompt).text
         else:
