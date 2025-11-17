@@ -81,7 +81,8 @@ if st.button("🚀 دریافت دیتا + تحلیل Gemini"):
         t0 = time.time()
 
         # news
-        get_news()
+        #get_news(
+        get_news = {"".join([f"- {n.title}\n" for n in news])}
 
         # prices
         stock_price, stock_hist = get_stock(stock_symbol)
@@ -100,7 +101,7 @@ if st.button("🚀 دریافت دیتا + تحلیل Gemini"):
         if GEMINI_KEY:
             prompt = f"""
 اخبار اقتصادی امروز:
-{"".join([f"- {n.title}\n" for n in news])}
+{get_news}
 
 قیمت‌ها:
 - سهام {stock_symbol}: {stock_price}
