@@ -1,0 +1,8 @@
+streamlit
+feedparser
+yfinance
+ccxt
+pandas
+numpy
+scikit-learn
+google-generativeai
