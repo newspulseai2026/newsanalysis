@@ -81,8 +81,8 @@ if st.button("🚀 دریافت دیتا + تحلیل Gemini"):
         t0 = time.time()
 
         # news
-        #get_news(
-        get_news = {"".join([f"- {n.title}\n" for n in news])}
+        news = get_news()
+        news_text = "".join([f"- {n.title}\n" for n in news])
 
         # prices
         stock_price, stock_hist = get_stock(stock_symbol)
@@ -99,22 +99,19 @@ if st.button("🚀 دریافت دیتا + تحلیل Gemini"):
         # Gemini Prompt
         # -------------------------
         if GEMINI_KEY:
-            prompt = f"""
-اخبار اقتصادی امروز:
-{get_news}
-
-قیمت‌ها:
-- سهام {stock_symbol}: {stock_price}
-- کریپتو {crypto_symbol}: {crypto_price}
-- فلز {metal_symbol}: {metal_price}
-
-پیش‌بینی محلی:
-- سهام: {stock_pred}
-- کریپتو: {crypto_pred}
-- فلز: {metal_pred}
-
-لطفاً تحلیل تو، روندها، و پیش‌بینی کوتاه‌مدت خودت را بده."""
-
+            prompt = (
+                "اخبار اقتصادی امروز:\n"
+                + news_text
+                + f"قیمت‌ها:\n"
+                  f"- سهام {stock_symbol}: {stock_price}\n"
+                  f"- کریپتو {crypto_symbol}: {crypto_price}\n"
+                  f"- فلز {metal_symbol}: {metal_price}\n"
+                  f"پیش‌بینی محلی:\n"
+                  f"- سهام: {stock_pred}\n"
+                  f"- کریپتو: {crypto_pred}\n"
+                  f"- فلز: {metal_pred}\n"
+                  "لطفاً تحلیل تو، روندها، و پیش‌بینی کوتاه‌مدت خودت را بده."
+            )                
             ai_output = model.generate_content(prompt).text
         else:
             ai_output = "❗ Gemini API key وارد نشده — فقط پیش‌بینی محلی نمایش داده می‌شود."
