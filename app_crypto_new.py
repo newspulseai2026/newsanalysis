@@ -14,8 +14,8 @@ import json
 RSS_URL = "https://www.investing.com/rss/news_301.rss"
 COINGECKO_PRICE_API = "https://api.coingecko.com/api/v3/simple/price"
 COINGECKO_CHART_API = "https://api.coingecko.com/api/v3/coins/{coin}/market_chart"
-GEMINI_API_KEY = "AIzaSyAA90H731pSoYBT7q3yrHEUmM5bwP7wtQs"
-GEMINI_MODEL = "gemini-2.5-pro"
+GEMINI_API_KEY = "YOUR_GEMINI_API_KEY"
+GEMINI_MODEL = "gemini-2.0-flash"
 
 SUPPORTED_COINS = {
     "bitcoin": "BTC",
@@ -76,7 +76,7 @@ LANG = {
 # FUNCTIONS
 # ==========================
 
-def fetch_news(limit=20):
+def fetch_news(limit=10):
     r = requests.get(RSS_URL)
     root = ET.fromstring(r.content)
     out = []
@@ -102,7 +102,8 @@ def get_chart(coin):
 
 
 def gemini_analysis(news_titles, price_data):
-    text_news = "".join([f"- {n['t']}" for n in news_titles])
+    text_news = "
+".join([f"- {n['t']}" for n in news_titles])
     text_prices = json.dumps(price_data, indent=2)
 
     prompt = f"""
