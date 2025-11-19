@@ -289,5 +289,32 @@ if st.session_state.live:
         while st.session_state.live:
             df_live = fetch_prices_bulk(list(SUPPORTED_COINS.keys()))
             df_live_display = df_live.copy()
-            df_live_display["price"] = df_live_display["price"].apply(lambda x: f"{x:.6f}" if isinstance(x, float) an
+            df_live_display["price"] = df_live_display["price"].apply(lambda x: f"{x:.6f}" if isinstance(x, float) and x<1 else (f"{x:.2f}" if isinstance(x, float) else x))
+            # optionally compute small changes if previous snapshot exists
+            if "_prev_prices" in st.session_state:
+                prev = st.session_state._prev_prices
+                merged = df_live_display.merge(prev[["id","price"]], on="id", how="left", suffixes=("","_prev"))
+                def pct_change(row):
+                    try:
+                        p = float(row["price"])
+                        pp = float(row["price_prev"]) if row.get("price_prev") is not None else None
+                        if pp:
+                            return round((p-pp)/pp*100, 2)
+                    except:
+                        return None
+                merged["chg_pct"] = merged.apply(pct_change, axis=1)
+                display_df = merged[["symbol","price","chg_pct"]].set_index("symbol")
+            else:
+                display_df = df_live_display[["symbol","price"]].set_index("symbol")
 
+            live_placeholder.dataframe(display_df)
+            st.session_state._prev_prices = df_live_display
+            time.sleep(refresh_interval)
+    except Exception as e:
+        st.error(f"Live update error: {e}")
+else:
+    # show last snapshot (once)
+    df_prices = fetch_prices_bulk(list(SUPPORTED_COINS.keys()))
+    live_placeholder.dataframe(df_prices.set_index("symbol"))
+
+st.markdown('</div>', unsafe_allow_html=True)
