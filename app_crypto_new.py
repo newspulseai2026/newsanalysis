@@ -14,8 +14,8 @@ import json
 RSS_URL = "https://www.investing.com/rss/news_301.rss"
 COINGECKO_PRICE_API = "https://api.coingecko.com/api/v3/simple/price"
 COINGECKO_CHART_API = "https://api.coingecko.com/api/v3/coins/{coin}/market_chart"
-GEMINI_API_KEY = "YOUR_GEMINI_API_KEY"
-GEMINI_MODEL = "gemini-2.0-flash"
+GEMINI_API_KEY = "AIzaSyAA90H731pSoYBT7q3yrHEUmM5bwP7wtQs"
+GEMINI_MODEL = "gemini-2.5-pro"
 
 SUPPORTED_COINS = {
     "bitcoin": "BTC",
