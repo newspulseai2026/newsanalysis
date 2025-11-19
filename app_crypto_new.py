@@ -1,3 +1,4 @@
+
 # Streamlit Crypto Dashboard (Multi-language, Live Prices, RSS News, Gemini Analysis)
 # Fully rewritten + cleaned
 
@@ -76,7 +77,7 @@ LANG = {
 # FUNCTIONS
 # ==========================
 
-def fetch_news(limit=10):
+def fetch_news(limit=20):
     r = requests.get(RSS_URL)
     root = ET.fromstring(r.content)
     out = []
@@ -102,7 +103,9 @@ def get_chart(coin):
 
 
 def gemini_analysis(news_titles, price_data):
-    text_news = "".join([f"- {n['t']}" for n in news_titles])
+    text_news = "
+".join([f"- {n['t']}" for n in news_titles])
+".join([f"- {n['t']}" for n in news_titles])
     text_prices = json.dumps(price_data, indent=2)
 
     prompt = f"""
@@ -135,14 +138,9 @@ OVERALL MARKET SUMMARY:
     r = requests.post(url, json=payload, params={"key": GEMINI_API_KEY}).json()
 
     try:
-        return r["candidates"][0]["content"]["parts"][0]["text"]
-    except:
-        return "Gemini API Error. Check API key." r["candidates"][0]["content"]["parts"][0]["text"]
-    except:
-        return "Gemini API Error. Check API key." r["candidates"][0]["content"]["parts"][0]["text"]
-    except:
+        return r.get("candidates", [{}])[0].get("content", {}).get("parts", [{}])[0].get("text", "No response text")
+    except Exception:
         return "Gemini API Error. Check API key."
-
 
 # ==========================
 # UI SETUP
@@ -196,7 +194,29 @@ if btn_ai:
     st.subheader(T["analysis"])
     news = fetch_news()
     prices = get_prices()
-    out = gemini_analysis(news, prices)
-    st.write(out)
+    raw = gemini_analysis(news, prices)
+
+    # ---- Parse Gemini Output into Cards ----
+    blocks = raw.split("Headline:")
+    for b in blocks[1:]:
+        lines = b.strip().split("
+")
+        headline = lines[0].strip()
+        impacted = next((l.replace("Impacted Coins:", "").strip() for l in lines if l.startswith("Impacted Coins:")), "?")
+        move = next((l.replace("Expected Move:", "").strip() for l in lines if l.startswith("Expected Move:")), "?")
+        reason = next((l.replace("Reason:", "").strip() for l in lines if l.startswith("Reason:")), "?")
+
+        with st.container(border=True):
+            st.markdown(f"### 📰 {headline}")
+            st.markdown(f"**Impacted Coins:** {impacted}")
+            st.markdown(f"**Expected Change:** {move}")
+            st.markdown(f"**Reason:** {reason}")
+
+    # ---- Show Full Summary ----
+    if "OVERALL MARKET SUMMARY" in raw:
+        summary = raw.split("OVERALL MARKET SUMMARY")[-1]
+        with st.container(border=True):
+            st.markdown("## 📊 Overall Market Summary")
+            st.markdown(summary)
 
 st.markdown('</div>', unsafe_allow_html=True)
