@@ -197,8 +197,7 @@ if btn_ai:
     # ---- Parse Gemini Output into Cards ----
     blocks = raw.split("Headline:")
     for b in blocks[1:]:
-        lines = b.strip().split("
-")
+        lines = b.strip().split("")
         headline = lines[0].strip()
         impacted = next((l.replace("Impacted Coins:", "").strip() for l in lines if l.startswith("Impacted Coins:")), "?")
         move = next((l.replace("Expected Move:", "").strip() for l in lines if l.startswith("Expected Move:")), "?")
