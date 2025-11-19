@@ -103,8 +103,7 @@ def get_chart(coin):
 
 
 def gemini_analysis(news_titles, price_data):
-    text_news = "
-".join([f"- {n['t']}" for n in news_titles])
+    text_news = "".join([f"- {n['t']}" for n in news_titles])
 ".join([f"- {n['t']}" for n in news_titles])
     text_prices = json.dumps(price_data, indent=2)
 
